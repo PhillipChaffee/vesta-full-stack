@@ -1,26 +1,25 @@
 import React from "react";
-import logo from "./logo.svg";
-import "./App.css";
+import Header from "./base-components/header";
+import { BrowserRouter, Navigate, Route, Routes } from "react-router-dom";
+import LoanManager from "./loan-manager";
+import Dashboard from "./dashboard";
 
-function App() {
+const App: React.FC = () => {
+  const centerLinks = [
+    { text: "Dashboard", location: "dashboard" },
+    { text: "Loan Manager", location: "loan-manager" },
+  ];
+
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.tsx</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
+    <BrowserRouter>
+      <Header name="Loan Manager" centerLinks={centerLinks} rightLinks={[]} />
+      <Routes>
+        <Route path="dashboard" element={<Dashboard />} />
+        <Route path="loan-manager" element={<LoanManager />} />
+        <Route path="*" element={<Navigate to="/dashboard" />} />
+      </Routes>
+    </BrowserRouter>
   );
-}
+};
 
 export default App;

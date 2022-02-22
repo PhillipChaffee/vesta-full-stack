@@ -28,3 +28,26 @@ export function getUpdatedStateArray<T>(
 
   return existingValueUpdated ? newState : [...prevState, newValue];
 }
+
+export function camelToSnake(str: string) {
+  return str.replace(/([A-Z])/g, (group) => "_" + group.toLowerCase());
+}
+
+type serializedType = { [key: string]: any };
+
+export function recursiveJsonStringify<T>(t: T) {
+  const oldKeys = Object.keys(t);
+  const newKeys = oldKeys.map((key) => camelToSnake(key));
+
+  let returnValue: serializedType = {};
+  for (let i = 0; i < oldKeys.length; i++) {
+    const value = t[oldKeys[i] as keyof T];
+    if (typeof value === "object" && !(value as unknown as []).length) {
+      returnValue[newKeys[i]] = recursiveJsonStringify(value);
+    } else {
+      returnValue[newKeys[i]] = value;
+    }
+  }
+
+  return returnValue;
+}

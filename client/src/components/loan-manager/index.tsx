@@ -1,21 +1,23 @@
 import Button from "../base-components/button";
 import Table from "../base-components/table";
-import React, { useState } from "react";
-import { Loan } from "../../types/loan";
+import React, { useEffect, useState } from "react";
 import Modal from "../base-components/modal";
 import CreateLoanModal from "./create-loan-modal";
+import { Loan } from "../../types/loan";
+import { sendAPIRequest } from "../../clients/http-client";
 
 const LoanManager: React.FC = () => {
   const [showCreateLoan, setShowCreateLoan] = useState(false);
-  const data: Loan[] = [
-    {
-      id: 1,
-      loanOfficerName: "Phillip",
-      borrowerCount: 2,
-      propertyAddress: "123",
-    } as Loan,
-  ];
+  const [loans, setLoans] = useState([] as Loan[]);
 
+  useEffect(() => {
+    sendAPIRequest<Loan[]>("/loans").then((res) => {
+      setLoans(res.data);
+    });
+  });
+  if (loans.length === 0) {
+    return <></>;
+  }
   return (
     <>
       <Modal
@@ -29,7 +31,7 @@ const LoanManager: React.FC = () => {
           className="mb-5 max-w-[10rem] ml-auto"
           onClick={() => setShowCreateLoan(!showCreateLoan)}
         />
-        <Table data={data} />
+        <Table data={loans} />
       </div>
     </>
   );

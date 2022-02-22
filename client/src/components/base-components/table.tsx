@@ -30,8 +30,11 @@ const Table = <T extends Base>(props: TableProps<T>) => {
               <tbody className="bg-white divide-y divide-gray-200">
                 {data.map((row) => (
                   <tr key={row.id}>
-                    {Object.values(row).map((cell) => (
-                      <td key={cell} className="px-6 py-4 whitespace-nowrap">
+                    {Object.values(row).map((cell, i) => (
+                      <td
+                        key={i + cell}
+                        className="px-6 py-4 whitespace-nowrap"
+                      >
                         <div className="text-sm text-gray-900">{cell}</div>
                       </td>
                     ))}

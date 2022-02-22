@@ -1,10 +1,11 @@
 import React from "react";
+import Base from "../../types/base";
 
-interface TableProps<T> {
+interface TableProps<T extends Base> {
   data: T[];
 }
 
-const Table = <T extends object>(props: TableProps<T>) => {
+const Table = <T extends Base>(props: TableProps<T>) => {
   const { data } = props;
 
   return (
@@ -28,9 +29,9 @@ const Table = <T extends object>(props: TableProps<T>) => {
               </thead>
               <tbody className="bg-white divide-y divide-gray-200">
                 {data.map((row) => (
-                  <tr>
+                  <tr key={row.id}>
                     {Object.values(row).map((cell) => (
-                      <td className="px-6 py-4 whitespace-nowrap">
+                      <td key={cell} className="px-6 py-4 whitespace-nowrap">
                         <div className="text-sm text-gray-900">{cell}</div>
                       </td>
                     ))}

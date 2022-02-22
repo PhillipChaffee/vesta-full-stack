@@ -9,6 +9,7 @@ const LoanManager: React.FC = () => {
   const [showCreateLoan, setShowCreateLoan] = useState(false);
   const data: Loan[] = [
     {
+      id: 1,
       loanOfficerName: "Phillip",
       borrowerCount: 2,
       propertyAddress: "123",

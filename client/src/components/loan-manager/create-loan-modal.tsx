@@ -1,6 +1,34 @@
-import React from "react";
+import React, { useState } from "react";
+import Input from "../base-components/input";
+import BorrowerInput from "./borrower-input";
+import { Borrower } from "../../types/borrower";
+import Button from "../base-components/button";
+import { getUpdatedStateArray } from "../../utils";
 
 const CreateLoanModal: React.FC = () => {
+  const [loanOfficer, setLoanOfficer] = useState("");
+  const [propertyAddress, setPropertyAddress] = useState("");
+  const [loanAmount, setLoanAmount] = useState("");
+  const [allBorrowers, setAllBorrowers] = useState([
+    { firstName: "-", lastName: "", phoneNumber: 1234567890 },
+  ] as Borrower[]);
+  const [loanBorrowers, setLoanBorrowers] = useState([] as Borrower[]);
+
+  const baseInputs = [
+    { label: "Loan Officer", state: loanOfficer, setState: setLoanOfficer },
+    {
+      label: "Property Address",
+      state: propertyAddress,
+      setState: setPropertyAddress,
+    },
+    { label: "Loan Amount", state: loanAmount, setState: setLoanAmount },
+  ];
+  const borrowerKey = (borrower: Borrower) =>
+    borrower.firstName + " " + borrower.lastName;
+  const allBorrowersMap: Map<string, Borrower> = new Map<string, Borrower>(
+    allBorrowers.map((borrower) => [borrowerKey(borrower), borrower])
+  );
+
   return (
     <div className="bg-white mb-5">
       <div className="mx-auto px-4 sm:px-6">
@@ -14,30 +42,56 @@ const CreateLoanModal: React.FC = () => {
             <form action="#" method="POST">
               <div className="overflow-hidden sm:rounded-md">
                 <div className="px-4 py-5 bg-white sm:p-6">
-                  <div className="grid grid-cols-6 gap-6">
-                    <div className="col-span-6 sm:col-span-4">
-                      <label
-                        htmlFor="loan-officer-name"
-                        className="block text-sm font-medium text-gray-700"
-                      >
-                        Loan Officer
-                      </label>
-                      <input
-                        type="text"
-                        name="loan-officer-name"
-                        id="loan-officer-name"
-                        className="mt-1 focus:ring-indigo-500 focus:border-indigo-500 block w-full shadow-sm sm:text-sm border-gray-300 rounded-md"
+                  <div className="grid grid-cols-2 gap-6">
+                    {baseInputs.map((input) => (
+                      <Input
+                        key={input.label}
+                        label={input.label}
+                        state={input.state}
+                        setState={input.setState}
+                      />
+                    ))}
+                    {loanBorrowers.map((borrower, i) => (
+                      <BorrowerInput
+                        key={borrower.phoneNumber}
+                        allBorrowers={allBorrowersMap}
+                        label={"Borrower " + i}
+                        selectedBorrower={borrower}
+                        setSelectedBorrower={(prevBorrower, newBorrower) => {
+                          if (!allBorrowersMap.has(borrowerKey(newBorrower))) {
+                            setAllBorrowers([...allBorrowers, newBorrower]);
+                          }
+                          setLoanBorrowers((prevState) =>
+                            getUpdatedStateArray(
+                              prevBorrower,
+                              newBorrower,
+                              prevState,
+                              "phoneNumber"
+                            )
+                          );
+                        }}
+                      />
+                    ))}
+                    <div className="col-span-2">
+                      <Button
+                        className=""
+                        text="Add Borrower"
+                        onClick={() =>
+                          setLoanBorrowers([
+                            ...loanBorrowers,
+                            {
+                              firstName: "-",
+                              lastName: "",
+                              phoneNumber: 123456798,
+                            },
+                          ])
+                        }
                       />
                     </div>
+                    <div className="py-5 text-right sm:pr-80 col-span-2">
+                      <Button className="" text="Save" onClick={() => {}} />
+                    </div>
                   </div>
-                </div>
-                <div className="px-4 py-3 text-right sm:px-6">
-                  <button
-                    type="submit"
-                    className="inline-flex justify-center py-2 px-4 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
-                  >
-                    Save
-                  </button>
                 </div>
               </div>
             </form>

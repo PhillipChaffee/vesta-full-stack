@@ -20,6 +20,7 @@ const Header: React.FC<HeaderProps> = (props) => {
           <nav className="hidden md:flex space-x-10">
             {centerLinks.map((link) => (
               <Link
+                key={link.location}
                 to={link.location}
                 className="text-base font-medium text-gray-500 hover:text-gray-900"
               >

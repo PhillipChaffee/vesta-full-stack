@@ -1,8 +1,6 @@
 class LoansController < ApplicationController
-  include StatsHelper
-
   before_action :set_loan, only: [:update]
-  after_action :broadcast_loans, only: [:create, :update]
+  after_action :broadcast, only: [:create, :update]
 
   # GET /loans
   def index
@@ -32,20 +30,7 @@ class LoansController < ApplicationController
   end
 
   def stats
-    all_loans = Loan.all
-    created_stats = [{ loanOfficer: "All Officers", count: all_loans.count }]
-    by_loan_officer = all_loans.group(:loan_officer_name).count
-    by_loan_officer.each { |lo, count| created_stats << { loanOfficer: lo, count: count } }
-
-    deleted_loans = Loan.where(deleted: true)
-    deleted_stats = [{ loanOfficer: "All Officers", count: deleted_loans.count }]
-    by_loan_officer = deleted_loans.group(:deleted_by).count
-    by_loan_officer.each { |lo, count| deleted_stats << { loanOfficer: lo, count: count } }
-
-    all_borrower_counts = Loan.all.map { |l| l.borrowers.count }
-    generic_stats = { medianBorrowerCount: median(all_borrower_counts), meanLoanAmount: Loan.all.average(:amount) }
-
-    render json: { createdStats: created_stats, deletedStats: deleted_stats, genericStats: generic_stats }
+    render json: Loan.all_stats
   end
 
   private
@@ -55,8 +40,9 @@ class LoansController < ApplicationController
     @loan = Loan.find(params[:id])
   end
 
-  def broadcast_loans
+  def broadcast
     ActionCable.server.broadcast("loans", Loan.where(deleted: false).as_json)
+    ActionCable.server.broadcast("stats", Loan.all_stats.as_json)
   end
 
   # Only allow a trusted parameter "white list" through.

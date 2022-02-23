@@ -1,22 +1,30 @@
 import React, { useEffect, useState } from "react";
 import Table from "../base-components/table";
 import { sendAPIRequest } from "../../clients/http-client";
-import Stats, { GenericStats } from "../../types/stats";
+import { AllStats, GenericStats, LoanStats } from "../../types/stats";
+import ActionCable from "actioncable";
 
 const Dashboard: React.FC = () => {
-  const [createdStats, setCreatedStats] = useState([] as Stats[]);
-  const [deletedStats, setDeletedStats] = useState([] as Stats[]);
+  const [createdStats, setCreatedStats] = useState([] as LoanStats[]);
+  const [deletedStats, setDeletedStats] = useState([] as LoanStats[]);
   const [genericStats, setGenericStats] = useState({} as GenericStats);
 
+  const setStats = (stats: AllStats) => {
+    setCreatedStats(stats.createdStats);
+    setDeletedStats(stats.deletedStats);
+    setGenericStats(stats.genericStats);
+  };
+
   useEffect(() => {
-    sendAPIRequest<{
-      createdStats: Stats[];
-      deletedStats: Stats[];
-      genericStats: GenericStats;
-    }>("/loans/stats").then((res) => {
-      setCreatedStats(res.data.createdStats);
-      setDeletedStats(res.data.deletedStats);
-      setGenericStats(res.data.genericStats);
+    sendAPIRequest<AllStats>("/loans/stats").then((res) => {
+      setStats(res.data);
+    });
+  }, []);
+
+  useEffect(() => {
+    const channel = ActionCable.createConsumer("ws://localhost:8080/cable");
+    channel.subscriptions.create("StatsChannel", {
+      received: (data: AllStats) => setStats(data),
     });
   }, []);
 

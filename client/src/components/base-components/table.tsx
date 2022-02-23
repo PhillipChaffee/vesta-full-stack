@@ -37,7 +37,10 @@ const Table = <T extends Base>(props: TableProps<T>) => {
                 {data.map((row) => (
                   <tr key={row.id}>
                     {keys.map((key) => (
-                      <td key={key} className="px-6 py-4 whitespace-nowrap">
+                      <td
+                        key={row.id + key}
+                        className="px-6 py-4 whitespace-nowrap"
+                      >
                         <div className="text-sm text-gray-900">
                           {row[key as keyof T]}
                         </div>

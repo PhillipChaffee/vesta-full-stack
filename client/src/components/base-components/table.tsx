@@ -21,16 +21,15 @@ const Table = <T extends Base>(props: TableProps<T>) => {
             <table className="min-w-full divide-y divide-gray-200">
               <thead className="bg-gray-50">
                 <tr>
-                  {data.length > 0 &&
-                    keys.map((key) => (
-                      <th
-                        key={key}
-                        scope="col"
-                        className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
-                      >
-                        {key.split(/(?=[A-Z])/).join(" ")}
-                      </th>
-                    ))}
+                  {keys.map((key) => (
+                    <th
+                      key={key}
+                      scope="col"
+                      className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+                    >
+                      {key.split(/(?=[A-Z])/).join(" ")}
+                    </th>
+                  ))}
                 </tr>
               </thead>
               <tbody className="bg-white divide-y divide-gray-200">

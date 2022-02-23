@@ -5,8 +5,8 @@ import { AllStats, GenericStats, LoanStats } from "../../types/stats";
 import ActionCable from "actioncable";
 
 const Dashboard: React.FC = () => {
-  const [createdStats, setCreatedStats] = useState([] as LoanStats[]);
-  const [deletedStats, setDeletedStats] = useState([] as LoanStats[]);
+  const [createdStats, setCreatedStats] = useState([{}] as LoanStats[]);
+  const [deletedStats, setDeletedStats] = useState([{}] as LoanStats[]);
   const [genericStats, setGenericStats] = useState({} as GenericStats);
 
   const setStats = (stats: AllStats) => {

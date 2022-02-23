@@ -1,6 +1,11 @@
 import Base from "./base";
 
-export default class Stats extends Base {
-  LoanOfficer?: string;
-  Count?: number;
+export default class LoanStats extends Base {
+  loanOfficer?: string;
+  count?: number;
+}
+
+export class GenericStats extends Base {
+  medianBorrowerCount?: number;
+  meanLoanAmount?: number;
 }

@@ -13,6 +13,7 @@ class LoansController < ApplicationController
 
     if @borrowers.count.positive? && @loan.save
       @loan.borrowers << @borrowers
+      ActionCable.server.broadcast("loans", Loan.all.as_json)
       render json: @loan, status: :created, location: @loan
     else
       render json: @loan.errors, status: :unprocessable_entity

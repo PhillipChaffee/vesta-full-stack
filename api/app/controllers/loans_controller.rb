@@ -1,7 +1,10 @@
 class LoansController < ApplicationController
+  before_action :set_loan, only: [:destroy]
+  after_action :broadcast_loans, only: [:create, :destroy]
+
   # GET /loans
   def index
-    @loans = Loan.all
+    @loans = Loan.where(deleted: false)
 
     render json: @loans
   end
@@ -13,16 +16,30 @@ class LoansController < ApplicationController
 
     if @borrowers.count.positive? && @loan.save
       @loan.borrowers << @borrowers
-      ActionCable.server.broadcast("loans", Loan.all.as_json)
       render json: @loan, status: :created, location: @loan
     else
       render json: @loan.errors, status: :unprocessable_entity
     end
   end
 
+  # DELETE /loans/1
+  def destroy
+    @loan.update!(deleted: true)
+  end
+
   private
-    # Only allow a trusted parameter "white list" through.
-    def loan_params
-      params.require(:loan).permit(:loan_officer_name, :property_address, :amount, :borrower_ids => [])
-    end
+
+  # Use callbacks to share common setup or constraints between actions.
+  def set_loan
+    @loan = Loan.find(params[:id])
+  end
+
+  def broadcast_loans
+    ActionCable.server.broadcast("loans", Loan.where(deleted: false).as_json)
+  end
+
+  # Only allow a trusted parameter "white list" through.
+  def loan_params
+    params.require(:loan).permit(:loan_officer_name, :property_address, :amount, :borrower_ids => [])
+  end
 end

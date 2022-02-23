@@ -3,10 +3,11 @@ import Base from "../../types/base";
 
 interface TableProps<T extends Base> {
   data: T[];
+  onDelete: (id: number) => void;
 }
 
 const Table = <T extends Base>(props: TableProps<T>) => {
-  const { data } = props;
+  const { data, onDelete } = props;
 
   return (
     <div className="flex flex-col">
@@ -16,15 +17,16 @@ const Table = <T extends Base>(props: TableProps<T>) => {
             <table className="min-w-full divide-y divide-gray-200">
               <thead className="bg-gray-50">
                 <tr>
-                  {Object.keys(data[0]).map((key) => (
-                    <th
-                      key={key}
-                      scope="col"
-                      className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
-                    >
-                      {key.split(/(?=[A-Z])/).join(" ")}
-                    </th>
-                  ))}
+                  {data.length > 0 &&
+                    Object.keys(data[0]).map((key) => (
+                      <th
+                        key={key}
+                        scope="col"
+                        className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+                      >
+                        {key.split(/(?=[A-Z])/).join(" ")}
+                      </th>
+                    ))}
                 </tr>
               </thead>
               <tbody className="bg-white divide-y divide-gray-200">
@@ -40,7 +42,7 @@ const Table = <T extends Base>(props: TableProps<T>) => {
                     ))}
                     <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
                       <a
-                        href="#"
+                        onClick={() => onDelete(row.id as number)}
                         className="text-indigo-600 hover:text-indigo-900"
                       >
                         Delete

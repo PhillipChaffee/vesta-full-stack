@@ -6,9 +6,12 @@ import CreateLoanModal from "./create-loan-modal";
 import { Loan } from "../../types/loan";
 import { sendAPIRequest } from "../../clients/http-client";
 import ActionCable from "actioncable";
+import DeleteLoanModal from "./delete-loan-modal";
 
 const LoanManager: React.FC = () => {
   const [showCreateLoan, setShowCreateLoan] = useState(false);
+  const [showDeleteLoan, setShowDeleteLoan] = useState(false);
+  const [loanIdToDelete, setShowLoanIdToDelete] = useState(0);
   const [loans, setLoans] = useState([] as Loan[]);
 
   useEffect(() => {
@@ -24,12 +27,22 @@ const LoanManager: React.FC = () => {
     });
   }, []);
 
-  if (loans.length === 0) {
-    return <></>;
-  }
+  const deleteLoan = (id: number) => {
+    sendAPIRequest(`/loans/${id}`, "DELETE").catch();
+  };
 
   return (
     <>
+      <Modal
+        active={showDeleteLoan}
+        setActive={setShowDeleteLoan}
+        children={
+          <DeleteLoanModal
+            setShowModal={setShowDeleteLoan}
+            onDelete={() => deleteLoan(loanIdToDelete)}
+          />
+        }
+      />
       <Modal
         active={showCreateLoan}
         setActive={setShowCreateLoan}
@@ -41,7 +54,13 @@ const LoanManager: React.FC = () => {
           className="mb-5 max-w-[10rem] ml-auto"
           onClick={() => setShowCreateLoan(!showCreateLoan)}
         />
-        {loans.length > 0 && <Table data={loans} />}
+        <Table
+          data={loans.length > 0 ? loans : []}
+          onDelete={(id) => {
+            setShowDeleteLoan(true);
+            setShowLoanIdToDelete(id);
+          }}
+        />
       </div>
     </>
   );

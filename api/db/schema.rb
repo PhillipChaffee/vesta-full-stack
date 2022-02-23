@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2022_02_22_010601) do
+ActiveRecord::Schema.define(version: 2022_02_23_052230) do
 
   create_table "borrowers", force: :cascade do |t|
     t.string "first_name"
@@ -18,6 +18,8 @@ ActiveRecord::Schema.define(version: 2022_02_22_010601) do
     t.integer "phone_number"
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
+    t.integer "deleted_by_id"
+    t.index ["deleted_by_id"], name: "index_borrowers_on_deleted_by_id"
     t.index ["phone_number"], name: "index_borrowers_on_phone_number", unique: true
   end
 
@@ -32,6 +34,7 @@ ActiveRecord::Schema.define(version: 2022_02_22_010601) do
     t.decimal "amount"
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
+    t.boolean "deleted", default: false, null: false
     t.index ["property_address"], name: "index_loans_on_property_address", unique: true
   end
 

@@ -3,17 +3,18 @@ import Base from "../../types/base";
 
 interface TableProps<T extends Base> {
   title?: string;
+  keys: string[];
   data: T[];
   allowDelete: boolean;
   onDelete?: (id: number) => void;
 }
 
 const Table = <T extends Base>(props: TableProps<T>) => {
-  const { title, data, allowDelete, onDelete } = props;
+  const { title, keys, data, allowDelete, onDelete } = props;
 
   return (
     <div className="flex flex-col">
-      {title && <div className="text-xl font-bold">{title}</div>}
+      {title && <div className="pb-5 text-xl font-bold">{title}</div>}
       <div className="-my-2 overflow-x-auto sm:-mx-6 lg:-mx-8">
         <div className="py-2 align-middle inline-block min-w-full sm:px-6 lg:px-8">
           <div className="shadow overflow-hidden border-b border-gray-200 sm:rounded-lg">
@@ -21,7 +22,7 @@ const Table = <T extends Base>(props: TableProps<T>) => {
               <thead className="bg-gray-50">
                 <tr>
                   {data.length > 0 &&
-                    Object.keys(data[0]).map((key) => (
+                    keys.map((key) => (
                       <th
                         key={key}
                         scope="col"
@@ -35,12 +36,11 @@ const Table = <T extends Base>(props: TableProps<T>) => {
               <tbody className="bg-white divide-y divide-gray-200">
                 {data.map((row) => (
                   <tr key={row.id}>
-                    {Object.values(row).map((cell, i) => (
-                      <td
-                        key={i + cell}
-                        className="px-6 py-4 whitespace-nowrap"
-                      >
-                        <div className="text-sm text-gray-900">{cell}</div>
+                    {keys.map((key) => (
+                      <td key={key} className="px-6 py-4 whitespace-nowrap">
+                        <div className="text-sm text-gray-900">
+                          {row[key as keyof T]}
+                        </div>
                       </td>
                     ))}
                     {allowDelete && (

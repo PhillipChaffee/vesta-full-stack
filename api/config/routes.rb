@@ -1,6 +1,5 @@
 Rails.application.routes.draw do
-  get '/loans/created', to: 'loans#created'
-  get '/loans/deleted', to: 'loans#deleted'
+  get '/loans/stats', to: 'loans#stats'
 
   resources :loans
   resources :borrowers

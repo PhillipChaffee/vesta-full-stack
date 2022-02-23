@@ -3,4 +3,8 @@ class Loan < ApplicationRecord
   validates :property_address, uniqueness: true
 
   has_and_belongs_to_many :borrowers
+
+  def as_json(options = {})
+    super(options).merge({ borrowerCount: borrowers.count })
+  end
 end

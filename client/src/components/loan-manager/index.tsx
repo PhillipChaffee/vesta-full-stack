@@ -61,6 +61,7 @@ const LoanManager: React.FC = () => {
           onClick={() => setShowCreateLoan(!showCreateLoan)}
         />
         <Table
+          keys={["loanOfficerName", "propertyAddress", "borrowerCount"]}
           data={loans.length > 0 ? loans : []}
           allowDelete={true}
           onDelete={(id) => {

@@ -8,18 +8,28 @@ const Dashboard: React.FC = () => {
   const [deletedStats, setDeletedStats] = useState([] as Stats[]);
 
   useEffect(() => {
-    sendAPIRequest<[]>("/loans/created").then((res) =>
-      setCreatedStats(res.data)
-    );
-    sendAPIRequest<[]>("/loans/deleted").then((res) =>
-      setDeletedStats(res.data)
-    );
+    sendAPIRequest<{ createdStats: Stats[]; deletedStats: Stats[] }>(
+      "/loans/stats"
+    ).then((res) => {
+      setCreatedStats(res.data.createdStats);
+      setDeletedStats(res.data.deletedStats);
+    });
   }, []);
 
   return (
     <div className="px-40 grid grid-cols-3 gap-6">
-      <Table title="Loans Created" data={createdStats} allowDelete={false} />
-      <Table title="Loans Deleted" data={deletedStats} allowDelete={false} />
+      <Table
+        title="Loans Created"
+        keys={["Loan Officer", "Count"]}
+        data={createdStats}
+        allowDelete={false}
+      />
+      <Table
+        title="Loans Deleted"
+        keys={["Loan Officer", "Count"]}
+        data={deletedStats}
+        allowDelete={false}
+      />
     </div>
   );
 };

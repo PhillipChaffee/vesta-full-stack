@@ -18,8 +18,6 @@ ActiveRecord::Schema.define(version: 2022_02_23_052230) do
     t.integer "phone_number"
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
-    t.integer "deleted_by_id"
-    t.index ["deleted_by_id"], name: "index_borrowers_on_deleted_by_id"
     t.index ["phone_number"], name: "index_borrowers_on_phone_number", unique: true
   end
 
@@ -35,6 +33,7 @@ ActiveRecord::Schema.define(version: 2022_02_23_052230) do
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
     t.boolean "deleted", default: false, null: false
+    t.string "deleted_by"
     t.index ["property_address"], name: "index_loans_on_property_address", unique: true
   end
 

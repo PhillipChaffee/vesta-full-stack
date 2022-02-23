@@ -3,14 +3,15 @@ import Input from "../base-components/input";
 import Button from "../base-components/button";
 
 interface DeleteLoanModalProps {
-  onDelete: Function;
+  loanId: number;
+  onDelete: (id: number, loanOfficer: string) => void;
   setShowModal: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
 const DeleteLoanModal: React.FC<DeleteLoanModalProps> = (props) => {
   const [loanOfficer, setLoanOfficer] = useState("");
   const [errorMessage, setErrorMessage] = useState("");
-  const { onDelete, setShowModal } = props;
+  const { loanId, onDelete, setShowModal } = props;
 
   return (
     <div className="bg-white mb-5">
@@ -40,7 +41,7 @@ const DeleteLoanModal: React.FC<DeleteLoanModalProps> = (props) => {
                   setErrorMessage("Please enter Loan Officer Name.");
                   return;
                 }
-                onDelete();
+                onDelete(loanId, loanOfficer);
                 setErrorMessage("");
                 setShowModal(false);
               }}

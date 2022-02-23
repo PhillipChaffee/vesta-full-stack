@@ -27,8 +27,13 @@ const LoanManager: React.FC = () => {
     });
   }, []);
 
-  const deleteLoan = (id: number) => {
-    sendAPIRequest(`/loans/${id}`, "DELETE").catch();
+  const deleteLoan = (id: number, officerName: string) => {
+    sendAPIRequest(`/loans/${id}`, "PATCH", {
+      loan: {
+        deleted: true,
+        deleted_by: officerName,
+      },
+    }).catch();
   };
 
   return (
@@ -38,8 +43,9 @@ const LoanManager: React.FC = () => {
         setActive={setShowDeleteLoan}
         children={
           <DeleteLoanModal
+            loanId={loanIdToDelete}
             setShowModal={setShowDeleteLoan}
-            onDelete={() => deleteLoan(loanIdToDelete)}
+            onDelete={deleteLoan}
           />
         }
       />
@@ -56,6 +62,7 @@ const LoanManager: React.FC = () => {
         />
         <Table
           data={loans.length > 0 ? loans : []}
+          allowDelete={true}
           onDelete={(id) => {
             setShowDeleteLoan(true);
             setShowLoanIdToDelete(id);

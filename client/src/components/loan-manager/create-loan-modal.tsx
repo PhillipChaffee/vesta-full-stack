@@ -110,7 +110,7 @@ const CreateLoanModal: React.FC<CreateLoanModalProps> = (props) => {
                       <BorrowerInput
                         key={borrower.phoneNumber}
                         allBorrowers={allBorrowers}
-                        label={"Borrower " + i}
+                        label={"Borrower " + (i + 1)}
                         selectedBorrower={borrower}
                         setSelectedBorrower={(prevBorrower, newBorrower) => {
                           if (!allBorrowers.has(borrowerKey(newBorrower))) {

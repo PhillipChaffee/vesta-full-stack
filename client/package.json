@@ -23,8 +23,8 @@
     "web-vitals": "^2.1.0"
   },
   "scripts": {
-    "build:css": "postcss src/index.css -o build/index.css",
-    "watch:css": "postcss src/index.css -o src/index.css -w",
+    "build:css": "postcss src/main.css -o build/index.css",
+    "watch:css": "postcss src/main.css -o src/index.css -w",
     "start": "yarn run watch:css & yarn run start-js",
     "build": "yarn build:css && build-js",
     "start-js": "PORT=8080 react-scripts start",

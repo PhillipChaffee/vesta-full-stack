@@ -127,18 +127,23 @@ const CreateLoanModal: React.FC<CreateLoanModalProps> = (props) => {
                         }}
                       />
                     ))}
-                    <div className="col-span-2">
-                      <Button
-                        className=""
-                        text="Add Borrower"
-                        onClick={() =>
-                          setLoanBorrowers([
-                            ...loanBorrowers,
-                            new Borrower("-", "", 123456798),
-                          ])
-                        }
-                      />
-                    </div>
+                    {loanBorrowers.length < 3 && (
+                      <div className="col-span-2">
+                        <Button
+                          className=""
+                          text="Add Borrower"
+                          onClick={() => {
+                            if (loanBorrowers.length > 2) {
+                              return;
+                            }
+                            setLoanBorrowers([
+                              ...loanBorrowers,
+                              new Borrower("-", "", 123456798),
+                            ]);
+                          }}
+                        />
+                      </div>
+                    )}
                     {errorMessage.length > 0 && (
                       <span className="text-red-500">{errorMessage}</span>
                     )}

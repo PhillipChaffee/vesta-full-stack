@@ -27,18 +27,21 @@ const AddBorrower: React.FC<AddBorrowerProps> = (props) => {
         label="First Name"
         state={firstName}
         setState={setFirstName}
+        validate={(value) => value.length > 0}
       />
       <Input
         key="Last Name"
         label="Last Name"
         state={lastName}
         setState={setLastName}
+        validate={(value) => value.length > 0}
       />
       <Input
         key="Phone Number"
         label="Phone Number"
         state={phoneNumber}
         setState={setPhoneNumber}
+        validate={(value) => !!parseInt(value.toString())}
       />
       <Button
         className=""

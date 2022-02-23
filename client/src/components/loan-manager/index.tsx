@@ -33,7 +33,7 @@ const LoanManager: React.FC = () => {
       <Modal
         active={showCreateLoan}
         setActive={setShowCreateLoan}
-        children={<CreateLoanModal />}
+        children={<CreateLoanModal setShowModal={setShowCreateLoan} />}
       />
       <div className="container m-auto">
         <Button

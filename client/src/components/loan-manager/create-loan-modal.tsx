@@ -7,13 +7,20 @@ import { getUpdatedStateArray } from "../../utils";
 import { sendAPIRequest } from "../../clients/http-client";
 import { Loan } from "../../types/loan";
 
-const CreateLoanModal: React.FC = () => {
+interface CreateLoanModalProps {
+  setShowModal: React.Dispatch<React.SetStateAction<boolean>>;
+}
+
+const CreateLoanModal: React.FC<CreateLoanModalProps> = (props) => {
   const [loanOfficer, setLoanOfficer] = useState("");
   const [propertyAddress, setPropertyAddress] = useState("");
   const [loanAmount, setLoanAmount] = useState(0);
   const [allBorrowers, setAllBorrowers] = useState(new Map<string, Borrower>());
   const [newBorrowers, setNewBorrowers] = useState(true);
   const [loanBorrowers, setLoanBorrowers] = useState([] as Borrower[]);
+  const [errorMessage, setErrorMessage] = useState("");
+
+  const { setShowModal } = props;
 
   const borrowerKey = (borrower: Borrower) =>
     borrower.firstName + " " + borrower.lastName;
@@ -36,6 +43,16 @@ const CreateLoanModal: React.FC = () => {
   }, [newBorrowers]);
 
   const saveLoan = () => {
+    if (
+      !loanOfficer ||
+      !propertyAddress ||
+      !parseInt(loanAmount.toString()) ||
+      loanAmount < 1 ||
+      loanBorrowers.length < 1
+    ) {
+      setErrorMessage("Please fill out all fields");
+      return;
+    }
     const loan = new Loan(
       loanOfficer,
       propertyAddress,
@@ -48,18 +65,10 @@ const CreateLoanModal: React.FC = () => {
       setPropertyAddress("");
       setLoanAmount(0);
       setLoanBorrowers([]);
+      setErrorMessage("");
+      setShowModal(false);
     });
   };
-
-  const baseInputs = [
-    { label: "Loan Officer", state: loanOfficer, setState: setLoanOfficer },
-    {
-      label: "Property Address",
-      state: propertyAddress,
-      setState: setPropertyAddress,
-    },
-    { label: "Loan Amount", state: loanAmount, setState: setLoanAmount },
-  ];
 
   return (
     <div className="bg-white mb-5">
@@ -75,18 +84,28 @@ const CreateLoanModal: React.FC = () => {
               <div className="overflow-hidden sm:rounded-md">
                 <div className="px-4 py-5 bg-white sm:p-6">
                   <div className="grid grid-cols-2 gap-6">
-                    {baseInputs.map((input) => (
-                      <Input<typeof input.state>
-                        key={input.label}
-                        label={input.label}
-                        state={input.state}
-                        setState={
-                          input.setState as React.Dispatch<
-                            React.SetStateAction<typeof input.state>
-                          >
-                        }
-                      />
-                    ))}
+                    <Input
+                      label="Loan Officer"
+                      state={loanOfficer}
+                      setState={setLoanOfficer}
+                      validate={(value) =>
+                        typeof value === "string" && value.length > 0
+                      }
+                    />
+                    <Input
+                      label="Property Address"
+                      state={propertyAddress}
+                      setState={setPropertyAddress}
+                      validate={(value) =>
+                        typeof value === "string" && value.length > 0
+                      }
+                    />
+                    <Input
+                      label="Loan Amount"
+                      state={loanAmount}
+                      setState={setLoanAmount}
+                      validate={(value) => !!parseInt(value)}
+                    />
                     {loanBorrowers.map((borrower, i) => (
                       <BorrowerInput
                         key={borrower.phoneNumber}
@@ -120,6 +139,9 @@ const CreateLoanModal: React.FC = () => {
                         }
                       />
                     </div>
+                    {errorMessage.length > 0 && (
+                      <span className="text-red-500">{errorMessage}</span>
+                    )}
                     <div className="py-5 text-right sm:pr-80 col-span-2">
                       <Button
                         className=""
